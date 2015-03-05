@@ -239,6 +239,10 @@ var dataframe = (function() {
   };
 
   methods.addMarker = function(lat, lng, layerId, options, eachOptions) {
+    if (options.icon) {
+      options.icon = L.icon(options.icon);
+    }
+
     var df = dataframe.create()
       .col('lat', lat)
       .col('lng', lng)
