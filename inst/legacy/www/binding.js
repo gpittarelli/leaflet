@@ -46,7 +46,7 @@ var dataframe = (function() {
     var self = this;
     this.effectiveLength = 0;
     this.colindices = {};
-    
+
     $.each(this.columns, function(i, column) {
       self.effectiveLength = Math.max(self.effectiveLength, column.length);
       self.colindices[self.colnames[i]] = i;
@@ -63,7 +63,7 @@ var dataframe = (function() {
   DataFrame.prototype.col = function(name, values, strict) {
     if (typeof(name) !== 'string')
       throw new Error('Invalid column name "' + name + '"');
-    
+
     var index = this._colIndex(name);
 
     if (arguments.length === 1) {
@@ -97,7 +97,7 @@ var dataframe = (function() {
 
   DataFrame.prototype.get = function(row, col) {
     var self = this;
-    
+
     if (row > this.effectiveLength)
       throw new Error('Row argument was out of bounds: ' + row + ' > ' + this.effectiveLength);
 
@@ -176,13 +176,13 @@ var dataframe = (function() {
         map = L.map(id, leafletOptions);
         map.id = id;
         $el.data('leaflet-map', map);
-        
+
         maps[id] = map;
         map.markers = new LayerStore(map);
         map.shapes = new LayerStore(map);
         map.popups = new LayerStore(map);
         map.geojson = new LayerStore(map);
-        
+
         // When the map is clicked, send the coordinates back to the app
         map.on('click', function(e) {
           Shiny.onInputChange(id + '_click', {
@@ -191,7 +191,7 @@ var dataframe = (function() {
             '.nonce': Math.random() // Force reactivity if lat/lng hasn't changed
           });
         });
-        
+
         // Send bounds info back to the app
         function updateBounds() {
           var bounds = map.getBounds();
@@ -204,7 +204,7 @@ var dataframe = (function() {
           Shiny.onInputChange(id + '_zoom', map.getZoom());
         }
         setTimeout(updateBounds, 1);
-        
+
         map.on('moveend', updateBounds);
 
         var initialTileLayer = $el.data('initial-tile-layer');
@@ -218,7 +218,7 @@ var dataframe = (function() {
     }
   });
   Shiny.outputBindings.register(leafletOutputBinding, "leaflet-output-binding");
-  
+
   Shiny.addCustomMessageHandler('leaflet', function(data) {
     var mapId = data.mapId;
     var map = maps[mapId];
@@ -231,7 +231,7 @@ var dataframe = (function() {
       throw new Error('Unknown method ' + data.method);
     }
   });
-  
+
   var methods = {};
 
   methods.setView = function(lat, lng, zoom, forceReset) {
@@ -330,7 +330,7 @@ var dataframe = (function() {
       }).call(this);
     }
   };
-  
+
   /*
    * @param lat Array of latitude coordinates for polygons; different
    *   polygons are separated by null.
@@ -402,15 +402,15 @@ var dataframe = (function() {
       }).call(this);
     }
   };
-  
+
   methods.addGeoJSON = function(data, layerId) {
     var self = this;
     if (typeof(data) === "string") {
       data = JSON.parse(data);
     }
-    
+
     var globalStyle = data.style || {};
-    
+
     var gjlayer = L.geoJson(data, {
       style: function(feature) {
         if (feature.style || feature.properties.style) {
@@ -446,7 +446,7 @@ var dataframe = (function() {
   methods.clearPopups = function() {
     this.popups.clear();
   };
-  
+
   function LayerStore(map) {
     this._layers = {};
     this._group = L.layerGroup().addTo(map);
@@ -493,7 +493,7 @@ var dataframe = (function() {
   /*
   function unflattenLatLng(lat, lng, levels) {
     var stack = [];
-    function 
+    function
   }
   */
 
