@@ -211,7 +211,9 @@ var dataframe = (function() {
         var initialTileLayerAttrib = $el.data('initial-tile-layer-attrib');
         if (initialTileLayer) {
           L.tileLayer(initialTileLayer, {
-            attribution: initialTileLayerAttrib
+            attribution: initialTileLayerAttrib,
+//            noWrap : true,
+            continuousWorld: true
           }).addTo(map);
         }
       }
