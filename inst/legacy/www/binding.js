@@ -292,7 +292,14 @@ var dataframe = (function() {
   };
 
   methods.removeShape = function(layerId) {
-    this.shapes.remove(layerId);
+    if (Array.isArray(layerId)) {
+      var self = this;
+      layerId.forEach(function (lId) {
+        self.shapes.remove(lId);
+      });
+    } else {
+      this.shapes.remove(layerId);
+    }
   };
 
   methods.clearShapes = function() {
