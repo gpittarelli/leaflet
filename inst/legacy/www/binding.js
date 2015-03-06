@@ -373,6 +373,44 @@ var dataframe = (function() {
     }
   };
 
+
+  /*
+   * @param lat Array of latitude coordinates for polygons; different
+   *   polygons are separated by null.
+   * @param lng Array of longitude coordinates for polygons; different
+   *   polygons are separated by null.
+   * @param layerId Array of layer names.
+   * @param options Array of objects that contain options, one for each
+   *   polygon (or null for default), or null if none.
+   * @param defaultOptions The default set of options that all polygons
+   *   will use.
+   */
+  methods.addPolygons = function(all_points, layerId, options, defaultOptions) {
+    function zip(arrays) {
+      return arrays[0].map(function(_,i){
+        return arrays.map(function(array){return array[i]})
+      });
+    }
+
+    var self = this;
+    if (options === null || typeof(options) === 'undefined' || options.length == 0) {
+      options = [null];
+    }
+    for (idPos = 0; idPos < layerId.length; ++idPos) {
+      (function() {
+        var thisId = layerId[idPos];
+        var points = zip([all_points[idPos][0].lat, all_points[idPos][0].lng]);
+        var opt = $.extend(true, {}, defaultOptions,
+          options[idPos % options.length]);
+        var polygon = L.polygon(points, opt);
+        self.shapes.add(polygon, thisId);
+        polygon.on('click', mouseHandler(this.id, thisId, 'shape_click'), this);
+        polygon.on('mouseover', mouseHandler(this.id, thisId, 'shape_mouseover'), this);
+        polygon.on('mouseout', mouseHandler(this.id, thisId, 'shape_mouseout'), this);
+      }).call(this);
+    }
+  };
+
   function mouseHandler(mapId, layerId, eventName, extraInfo) {
     return function(e) {
       var lat = e.target.getLatLng ? e.target.getLatLng().lat : null;

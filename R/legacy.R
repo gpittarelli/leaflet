@@ -85,6 +85,18 @@ createLeafletMap <- function(session, outputId) {
     removeMarker(layerId),
     clearMarkers()
   ), stub)
+
+  obj$addPolygons = function(data, lng=NULL, lat=NULL,
+      layerId=NULL, options=list(), defaultOptions=list()) {
+      pgons = derivePolygons(data, NULL, NULL, TRUE, TRUE, "addPolygons")
+
+      session$sendCustomMessage('leaflet', list(
+          mapId = outputId,
+          method = "addPolygons",
+          args = list(pgons, layerId, options, defaultOptions)
+          ))
+  }
+
   unlist(obj, recursive = FALSE)
 }
 
