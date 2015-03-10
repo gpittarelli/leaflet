@@ -241,10 +241,6 @@ var dataframe = (function() {
   };
 
   methods.addMarker = function(lat, lng, layerId, options, eachOptions) {
-    if (options.icon) {
-      options.icon = L.icon(options.icon);
-    }
-
     var df = dataframe.create()
       .col('lat', lat)
       .col('lng', lng)
@@ -254,10 +250,19 @@ var dataframe = (function() {
 
     for (var i = 0; i < df.nrow(); i++) {
       (function() {
-        var marker = L.marker([df.get(i, 'lat'), df.get(i, 'lng')], df.get(i));
+        var opts = df.get(i);
+
+        if (typeof opts.icon === "object") {
+          opts.icon = L.icon(opts.icon);
+        } else {
+          delete opts.icon;
+        }
+
+        var marker = L.marker([df.get(i, 'lat'), df.get(i, 'lng')], opts);
         var thisId = df.get(i, 'layerId');
         this.markers.add(marker, thisId);
         marker.on('click', mouseHandler(this.id, thisId, 'marker_click'), this);
+        marker.on('dblclick', mouseHandler(this.id, thisId, 'marker_dblclick'), this);
         marker.on('mouseover', mouseHandler(this.id, thisId, 'marker_mouseover'), this);
         marker.on('mouseout', mouseHandler(this.id, thisId, 'marker_mouseout'), this);
       }).call(this);
@@ -399,6 +404,10 @@ var dataframe = (function() {
       return arrays[0].map(function(_,i){
         return arrays.map(function(array){return array[i]})
       });
+    }
+
+    if (!Array.isArray(layerId)) {
+      layerId = [layerId];
     }
 
     var self = this;
