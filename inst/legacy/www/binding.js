@@ -269,6 +269,35 @@ var dataframe = (function() {
     }
   };
 
+  methods.addClusteredMarker = function(lat, lng, layerId, options, eachOptions) {
+    var df = dataframe.create()
+      .col('lat', lat)
+      .col('lng', lng)
+      .col('layerId', layerId)
+      .cbind(options)
+      .cbind(eachOptions);
+
+    for (var i = 0; i < df.nrow(); i++) {
+      (function() {
+        var opts = df.get(i);
+
+        if (typeof opts.icon === "object") {
+          opts.icon = L.icon(opts.icon);
+        } else {
+          delete opts.icon;
+        }
+
+        var marker = L.marker([df.get(i, 'lat'), df.get(i, 'lng')], opts);
+        var thisId = df.get(i, 'layerId');
+        this.markers.add(marker, thisId);
+        marker.on('click', mouseHandler(this.id, thisId, 'marker_click'), this);
+        marker.on('dblclick', mouseHandler(this.id, thisId, 'marker_dblclick'), this);
+        marker.on('mouseover', mouseHandler(this.id, thisId, 'marker_mouseover'), this);
+        marker.on('mouseout', mouseHandler(this.id, thisId, 'marker_mouseout'), this);
+      }).call(this);
+    }
+  };
+
   methods.addCircleMarker = function(lat, lng, radius, layerId, options, eachOptions) {
     var df = dataframe.create()
       .col('lat', lat)
@@ -417,14 +446,17 @@ var dataframe = (function() {
     for (idPos = 0; idPos < layerId.length; ++idPos) {
       (function() {
         var thisId = layerId[idPos];
-        var points = zip([all_points[idPos][0].lat, all_points[idPos][0].lng]);
-        var opt = $.extend(true, {}, defaultOptions,
-          options[idPos % options.length]);
-        var polygon = L.polygon(points, opt);
-        self.shapes.add(polygon, thisId);
-        polygon.on('click', mouseHandler(this.id, thisId, 'shape_click'), this);
-        polygon.on('mouseover', mouseHandler(this.id, thisId, 'shape_mouseover'), this);
-        polygon.on('mouseout', mouseHandler(this.id, thisId, 'shape_mouseout'), this);
+        var layerPolys = all_points[idPos];
+        for (var i=0; i < layerPolys.lenth; ++i) {
+          var points = zip([layerPolys[i].lat, layerPolys[i].lng]);
+          var opt = $.extend(true, {}, defaultOptions,
+                             options[idPos % options.length]);
+          var polygon = L.polygon(points, opt);
+          self.shapes.add(polygon, thisId);
+          polygon.on('click', mouseHandler(this.id, thisId, 'shape_click'), this);
+          polygon.on('mouseover', mouseHandler(this.id, thisId, 'shape_mouseover'), this);
+          polygon.on('mouseout', mouseHandler(this.id, thisId, 'shape_mouseout'), this);
+        }
       }).call(this);
     }
   };

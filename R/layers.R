@@ -39,7 +39,7 @@ expandLimitsBbox = function(map, poly) {
   expandLimits(map, bbox[2, ], bbox[1, ])
 }
 
-# Represents an initial bbox; if combined with any other bbox value using
+# Represents an initial bbox; if combined with any other bbox valque using
 # bboxAdd, the other bbox will be the result.
 bboxNull = cbind(min = c(x = Inf, y = Inf), max = c(x = -Inf, y = -Inf))
 

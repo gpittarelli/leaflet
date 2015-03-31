@@ -69,6 +69,7 @@ createLeafletMap <- function(session, outputId) {
   obj = lapply(expression(
     setView(lat, lng, zoom, forceReset = FALSE),
     addMarker(lat, lng, layerId = NULL, options = list(), eachOptions = list()),
+    addClusteredMarker(lat, lng, layerId = NULL, options = list(), eachOptions = list()),
     addCircleMarker(lat, lng, radius, layerId = NULL, options = list(), eachOptions = list()),
     clearMarkers(),
     fitBounds(lat1, lng1, lat2, lng2),
@@ -127,6 +128,7 @@ leafletMap <- function(
       htmltools::tags$head(
         htmltools::tags$link(rel="stylesheet", type="text/css", href="leaflet-legacy/leaflet.css"),
         htmltools::tags$script(src="leaflet-legacy/leaflet.js"),
+        htmltools::tags$script(src="leaflet-legacy/leaflet-markercluster.js"),
         htmltools::tags$script(src="leaflet-legacy/binding.js")
       )
     ),
